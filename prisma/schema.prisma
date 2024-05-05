@@ -14,58 +14,68 @@ datasource db {
 }
 
 model User {
-  id         BigInt   @id @default(autoincrement())
+  id         Int      @id @default(autoincrement())
   email      String   @unique
   name       String?
   password   String
-  avatar     Image    @relation(fields: [image_id], references: [id])
+  avatar     Image?
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   courses_id Course[]
-  image_id   BigInt
+
+  @@map("users")
 }
 
 model Course {
-  id          BigInt   @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   title       String
   description String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  author_id   BigInt
+  author_id   Int
   authors     User     @relation(fields: [author_id], references: [id])
+  thumbnails  Image[]
   lessons_id  Lesson[]
   reviews_id  Review[]
+
+  @@map("courses")
 }
 
 model Lesson {
-  id          BigInt   @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   title       String
   description String
   video       String
-  thumbnails  Image[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  course_id   BigInt
+  course_id   Int
   courses     Course   @relation(fields: [course_id], references: [id])
+
+  @@map("lessons")
 }
 
 model Review {
-  id        BigInt   @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   title     String
   body      String
   rating    Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  course_id BigInt
+  course_id Int
   courses   Course   @relation(fields: [course_id], references: [id])
+
+  @@map("reviews")
 }
 
 model Image {
-  id        BigInt   @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   url       String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  lesson_id BigInt
-  lessons   Lesson   @relation(fields: [lesson_id], references: [id])
-  user      User[]
+  course_id Int
+  course    Course   @relation(fields: [course_id], references: [id])
+  user_id   Int      @unique
+  user      User     @relation(fields: [user_id], references: [id])
+
+  @@map("images")
 }
