@@ -12,6 +12,6 @@ async function bootstrap() {
         }),
     );
     SwaggerConfig.init(app);
-    await app.listen(3007);
+    await app.listen(5000);
 }
 bootstrap();
