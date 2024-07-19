@@ -1,17 +1,20 @@
-import { Controller, Get, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Request, UseGuards } from '@nestjs/common';
 import { AuthUser, Description } from '../auth/decorator';
 import { JwtGuard } from '../auth/guard';
 import { User } from '@prisma/client';
 import { ApiTags } from '@nestjs/swagger';
+import { UserService } from './user.service';
+import { AuthDTO } from 'src/auth/dto';
 
 @UseGuards(JwtGuard)
 @ApiTags('User APIs')
 @Controller('user')
 export class UserController {
-    constructor() {}
-    @Get('me')
+    constructor(private userService: UserService) {}
+
+    @Get('profile')
     @Description('Lấy thông tin tài khoản user')
-    getInfo(@AuthUser() user: User) {
-        return user;
+    async getInfo(@Request() req) {
+        return req.user;
     }
 }

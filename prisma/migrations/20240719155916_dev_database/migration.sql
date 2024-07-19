@@ -2,7 +2,7 @@
 CREATE TABLE "users" (
     "id" SERIAL NOT NULL,
     "email" TEXT NOT NULL,
-    "name" TEXT,
+    "name" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -14,9 +14,10 @@ CREATE TABLE "users" (
 CREATE TABLE "courses" (
     "id" SERIAL NOT NULL,
     "title" TEXT NOT NULL,
-    "description" TEXT NOT NULL,
+    "description" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "learner_id" INTEGER NOT NULL,
     "author_id" INTEGER NOT NULL,
 
     CONSTRAINT "courses_pkey" PRIMARY KEY ("id")
@@ -26,8 +27,8 @@ CREATE TABLE "courses" (
 CREATE TABLE "lessons" (
     "id" SERIAL NOT NULL,
     "title" TEXT NOT NULL,
-    "description" TEXT NOT NULL,
-    "video" TEXT NOT NULL,
+    "description" TEXT,
+    "video" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "course_id" INTEGER NOT NULL,
@@ -39,8 +40,8 @@ CREATE TABLE "lessons" (
 CREATE TABLE "reviews" (
     "id" SERIAL NOT NULL,
     "title" TEXT NOT NULL,
-    "body" TEXT NOT NULL,
-    "rating" INTEGER NOT NULL,
+    "content" TEXT,
+    "rating" INTEGER,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "course_id" INTEGER NOT NULL,
@@ -64,7 +65,13 @@ CREATE TABLE "images" (
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "users_name_key" ON "users"("name");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "images_user_id_key" ON "images"("user_id");
+
+-- AddForeignKey
+ALTER TABLE "courses" ADD CONSTRAINT "courses_learner_id_fkey" FOREIGN KEY ("learner_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "courses" ADD CONSTRAINT "courses_author_id_fkey" FOREIGN KEY ("author_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

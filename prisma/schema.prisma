@@ -14,14 +14,15 @@ datasource db {
 }
 
 model User {
-  id         Int      @id @default(autoincrement())
-  email      String   @unique
-  name       String?
-  password   String
-  avatar     Image?
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  courses_id Course[]
+  id               Int      @id @default(autoincrement())
+  email            String   @unique
+  name             String   @unique
+  password         String
+  avatar           Image?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  learner_courses  Course[] @relation("LearnerCourses")
+  authored_courses Course[] @relation("AuthoredCourses")
 
   @@map("users")
 }
@@ -29,11 +30,13 @@ model User {
 model Course {
   id          Int      @id @default(autoincrement())
   title       String
-  description String
+  description String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  learner_id  Int
+  learner     User     @relation("LearnerCourses", fields: [learner_id], references: [id])
   author_id   Int
-  authors     User     @relation(fields: [author_id], references: [id])
+  author      User     @relation("AuthoredCourses", fields: [author_id], references: [id])
   thumbnails  Image[]
   lessons_id  Lesson[]
   reviews_id  Review[]
@@ -44,8 +47,8 @@ model Course {
 model Lesson {
   id          Int      @id @default(autoincrement())
   title       String
-  description String
-  video       String
+  description String?
+  video       String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   course_id   Int
@@ -57,8 +60,8 @@ model Lesson {
 model Review {
   id        Int      @id @default(autoincrement())
   title     String
-  body      String
-  rating    Int
+  content   String?
+  rating    Int?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   course_id Int
